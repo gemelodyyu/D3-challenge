@@ -40,6 +40,135 @@ function makeResponsive() {
     // Initial Params
     var chosenXAxis = "poverty";
     var chosenYAxis = "healthcare";
+
+    // function used for updating x-scale and y-scale var upon click on axis label
+    function xScale(newsData, chosenXAxis) {
+        // create scales
+        var xLinearScale = d3.scaleLinear()
+        .domain([d3.min(newsData, d => d[chosenXAxis]),
+            d3.max(newsData, d => d[chosenXAxis])
+        ])
+        .range([0, width]);
+    
+        return xLinearScale;
+    };
+
+    function yScale(newsData, chosenYAxis) {
+        // create scales
+        var yLinearScale = d3.scaleLinear()
+        .domain([d3.min(newsData, d => d[chosenYAxis]),
+            d3.max(newsData, d => d[chosenYAxis])
+        ])
+        .range([0, width]);
+    
+        return yLinearScale;
+    };
+
+    // function used for updating xAxis yAxis var upon click on axis label
+    function renderXAxes(newXScale, xAxis) {
+        var bottomAxis = d3.axisBottom(newXScale);
+    
+        xAxis.transition()
+        .duration(1000)
+        .call(bottomAxis);
+    
+        return xAxis;
+    };
+
+    function renderYAxes(newYScale, yAxis) {
+        var leftAxis = d3.axisLeft(newYScale);
+    
+        yAxis.transition()
+        .duration(1000)
+        .call(leftAxis);
+    
+        return yAxis;
+    };
+
+    // function used for updating circles group with a transition to
+    // new circles
+    function renderXCircles(circlesXGroup, newXScale, chosenXAxis) {
+
+        circlesXGroup.transition()
+        .duration(1000)
+        .attr("cx", d => newXScale(d[chosenXAxis]));
+    
+        return circlesXGroup;
+    }; 
+
+    function renderYCircles(circlesYGroup, newYScale, chosenYAxis) {
+
+        circlesYGroup.transition()
+        .duration(1000)
+        .attr("cy", d => newYScale(d[chosenYAxis]));
+    
+        return circlesYGroup;
+    };   
+
+
+    // function used for updating text location
+    function renderXText(circlesXGroup, newXScale, chosenXAxis) {
+
+        circlesXGroup.transition()
+        .duration(1000)
+        .attr("dx", d => newXScale(d[chosenXAxis]));
+    
+        return circlesXGroup;
+    }; 
+    function renderYText(circlesYGroup, newYScale, chosenYAxis) {
+
+        circlesYGroup.transition()
+        .duration(1000)
+        .attr("dy", d => newYScale(d[chosenYAxis])+5)
+    
+        return circlesYGroup;
+    };
+
+    // function used for updating circles group with new tooltip
+    function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
+
+        var xlabel;
+        var ylabel
+    
+        if (chosenXAxis === "poverty") {
+        xlabel = "Poverty:";
+        }
+        else if (chosenXAxis === "age") {
+        xlabel = "Age:";
+        }
+        else {
+        xlabel = "Household income:";
+        }; 
+
+        if (chosenYAxis === "healthcare") {
+        ylabel = "Healthcare:";
+        }
+        else if (chosenYAxis === "Obesity") {
+        ylabel = "Obesity:";
+        }
+        else {
+        ylabel = "Smokes:";
+        };         
+    
+        var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function(d) {
+            return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}%<br>${ylabel} ${d[chosenYAxis]}`);
+        });
+    
+        circlesGroup.call(toolTip);
+    
+        circlesGroup.on("mouseover", function(data) {
+        toolTip.show(data);
+        })
+        // onmouseout event
+        .on("mouseout", function(data, index) {
+            toolTip.hide(data);
+        });
+    
+        return circlesGroup;
+    };
   
     // Read CSV
     d3.csv("assets/data/data.csv").then(function(newsData) {
