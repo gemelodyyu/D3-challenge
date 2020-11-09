@@ -17,10 +17,10 @@ function makeResponsive() {
     var svgHeight = window.innerHeight;
   
     var margin = {
-      top: 50,
-      bottom: 50,
-      right: 50,
-      left: 50
+      top: 20,
+      right: 40,
+      bottom: 80,
+      left: 100
     };
   
     var height = svgHeight - margin.top - margin.bottom;
@@ -30,7 +30,7 @@ function makeResponsive() {
     var svg = d3
       .select("#scatter")
       .append("svg")
-      .attr("height", svgHeight)
+      .attr("height", svgHeight+50)
       .attr("width", svgWidth);
   
     // Append group element
@@ -45,8 +45,8 @@ function makeResponsive() {
     function xScale(newsData, chosenXAxis) {
         // create scales
         var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(newsData, d => d[chosenXAxis]),
-            d3.max(newsData, d => d[chosenXAxis])
+        .domain([d3.min(newsData, d => d[chosenXAxis]*0.8),
+            d3.max(newsData, d => d[chosenXAxis]*1.2)
         ])
         .range([0, width]);
     
@@ -56,8 +56,8 @@ function makeResponsive() {
     function yScale(newsData, chosenYAxis) {
         // create scales
         var yLinearScale = d3.scaleLinear()
-        .domain([d3.min(newsData, d => d[chosenYAxis]),
-            d3.max(newsData, d => d[chosenYAxis])
+        .domain([d3.min(newsData, d => d[chosenYAxis]-2),
+            d3.max(newsData, d => d[chosenYAxis]+2)
         ])
         .range([0, width]);
     
@@ -87,48 +87,50 @@ function makeResponsive() {
 
     // function used for updating circles group with a transition to
     // new circles
-    function renderXCircles(circlesXGroup, newXScale, chosenXAxis) {
+    function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
 
-        circlesXGroup.transition()
+        circlesGroup.transition()
         .duration(1000)
-        .attr("cx", d => newXScale(d[chosenXAxis]));
+        .attr("cx", d => newXScale(d[chosenXAxis]))
+        .attr("dx", d => newXScale(d[chosenXAxis]));
     
-        return circlesXGroup;
+        return circlesGroup;
     }; 
 
-    function renderYCircles(circlesYGroup, newYScale, chosenYAxis) {
+    function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
 
-        circlesYGroup.transition()
+        circlesGroup.transition()
         .duration(1000)
-        .attr("cy", d => newYScale(d[chosenYAxis]));
+        .attr("cy", d => newYScale(d[chosenYAxis]))
+        .attr("cy", d => newYScale(d[chosenYAxis])+5);
     
-        return circlesYGroup;
+        return circlesGroup;
     };   
 
 
     // function used for updating text location
-    function renderXText(circlesXGroup, newXScale, chosenXAxis) {
+    function renderXText(circlesGroup, newXScale, chosenXAxis) {
 
-        circlesXGroup.transition()
+        circlesGroup.transition()
         .duration(1000)
         .attr("dx", d => newXScale(d[chosenXAxis]));
     
-        return circlesXGroup;
+        return circlesGroup;
     }; 
-    function renderYText(circlesYGroup, newYScale, chosenYAxis) {
+    function renderYText(circlesGroup, newYScale, chosenYAxis) {
 
-        circlesYGroup.transition()
+        circlesGroup.transition()
         .duration(1000)
         .attr("dy", d => newYScale(d[chosenYAxis])+5)
     
-        return circlesYGroup;
+        return circlesGroup;
     };
 
     // function used for updating circles group with new tooltip
     function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
         var xlabel;
-        var ylabel
+        var ylabel;
     
         if (chosenXAxis === "poverty") {
         xlabel = "Poverty:";
@@ -153,6 +155,12 @@ function makeResponsive() {
         var toolTip = d3.tip()
         .attr("class", "tooltip")
         .offset([80, -60])
+        .style("color", "black")
+        .style("background", 'white')
+        .style("border", "solid")
+        .style("border-width", "1px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")        
         .html(function(d) {
             return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}%<br>${ylabel} ${d[chosenYAxis]}`);
         });
@@ -297,10 +305,10 @@ function makeResponsive() {
                 xLinearScale = xScale(newsData, chosenXAxis);
 
                 // updates x axis with transition
-                xAxis = renderAxes(xLinearScale, xAxis);
+                xAxis = renderXAxes(xLinearScale, xAxis);
 
                 // updates circles with new x values
-                circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+                circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis);
 
                 // updates tooltips with new info
                 circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
@@ -358,10 +366,10 @@ function makeResponsive() {
                     yLinearScale = yScale(newsData, chosenYAxis);
 
                     // updates x axis with transition
-                    yAxis = renderAxes(yLinearScale, yAxis);
+                    yAxis = renderYAxes(yLinearScale, yAxis);
 
                     // updates circles with new x values
-                    circlesGroup = renderCircles(circlesGroup, yLinearScale, chosenYAxis);
+                    circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
 
                     // updates tooltips with new info
                     circlesGroup = updateToolTip(chosenYAxis, circlesGroup);
