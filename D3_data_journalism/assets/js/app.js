@@ -45,8 +45,8 @@ function makeResponsive() {
     function xScale(newsData, chosenXAxis) {
         // create scales
         var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(newsData, d => d[chosenXAxis]*0.8),
-            d3.max(newsData, d => d[chosenXAxis]*1.2)
+        .domain([d3.min(newsData, d => d[chosenXAxis]*0.9),
+            d3.max(newsData, d => d[chosenXAxis]*1.1)
         ])
         .range([0, width]);
     
@@ -138,7 +138,7 @@ function makeResponsive() {
         else if (chosenXAxis === "age") {
         xlabel = "Age:";
         }
-        else {
+        else if (chosenXAxis === "income") {
         xlabel = "Household income:";
         }; 
 
@@ -148,7 +148,7 @@ function makeResponsive() {
         else if (chosenYAxis === "Obesity") {
         ylabel = "Obesity:";
         }
-        else {
+        else if (chosenYAxis === "somkes") {
         ylabel = "Smokes:";
         };         
     
@@ -210,7 +210,7 @@ function makeResponsive() {
 
         // append x axis
         var xAxis = chartGroup.append("g")
-            .classed("x-axis", true)
+            // .classed("x-axis", true)
             .attr("transform", `translate(0, ${height})`)
             .call(bottomAxis);
 
@@ -222,10 +222,13 @@ function makeResponsive() {
         var circlesGroup = chartGroup.selectAll("circle")
         .data(newsData)
         .enter()
-        .append("circle")
+        .append("g"); 
+        var circles = circlesGroup.append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
-        .attr("class", "stateCircle");
+        attr("r", 15)
+        .classed("stateCircle", true);
+
         // append text inside circles
         var circlesText = circlesGroup.append("text")
         .text(d => d.abbr)
@@ -298,7 +301,7 @@ function makeResponsive() {
                 // replaces chosenXAxis with value
                 chosenXAxis = value;
 
-                // console.log(chosenXAxis)
+                console.log(chosenXAxis)
 
                 // functions here found above csv import
                 // updates x scale for new data
@@ -308,10 +311,13 @@ function makeResponsive() {
                 xAxis = renderXAxes(xLinearScale, xAxis);
 
                 // updates circles with new x values
-                circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis);
+                circles = renderXCircles(circles, xLinearScale, chosenXAxis);
+
+                // update text
+                circlesText = renderXText(circlesText, xLinearScale, chosenXAxis);
 
                 // updates tooltips with new info
-                circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+                circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                 // changes xAxis classes to change bold text
                 if (chosenXAxis === "poverty") {
@@ -365,17 +371,20 @@ function makeResponsive() {
                     // updates y scale for new data
                     yLinearScale = yScale(newsData, chosenYAxis);
 
-                    // updates x axis with transition
+                    // updates y axis with transition
                     yAxis = renderYAxes(yLinearScale, yAxis);
 
-                    // updates circles with new x values
-                    circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
+                    // updates circles with new y values
+                    circles = renderYCircles(circles, yLinearScale, chosenYAxis);
+
+                    // update y text
+                    circlesText = renderYText(circlesText, yLinearScale, chosenYAxis);
 
                     // updates tooltips with new info
-                    circlesGroup = updateToolTip(chosenYAxis, circlesGroup);
+                    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                     // changes yAxis classes to change bold text
-                    if (chosenYAxis === "poverty") {
+                    if (chosenYAxis === "healthcare") {
                         HealthLabel
                         .classed("active", true)
                         .classed("inactive", false);
@@ -386,7 +395,7 @@ function makeResponsive() {
                         .classed("active", false)
                         .classed("inactive", true);
                     }
-                    else if (chosenXAxis === "age") {
+                    else if (chosenXAxis === "obesity") {
                         HealthLabel
                         .classed("active", false)
                         .classed("inactive", true);
