@@ -30,7 +30,7 @@ function makeResponsive() {
     var svg = d3
       .select("#scatter")
       .append("svg")
-      .attr("height", svgHeight+50)
+      .attr("height", svgHeight)
       .attr("width", svgWidth);
   
     // Append group element
@@ -430,5 +430,4 @@ function makeResponsive() {
   
   // When the browser window is resized, makeResponsive() is called.
   d3.select(window).on("resize", makeResponsive);
-  
   
