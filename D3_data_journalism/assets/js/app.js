@@ -10,17 +10,16 @@ function makeResponsive() {
     if (!svgArea.empty()) {
       svgArea.remove();
     }
-  
     // SVG wrapper dimensions are determined by the current width and
     // height of the browser window.
     var svgWidth = window.innerWidth;
     var svgHeight = window.innerHeight;
   
     var margin = {
-      top: 20,
-      right: 40,
-      bottom: 80,
-      left: 100
+      top: 50,
+      right: 220,
+      bottom: 50,
+      left: 80
     };
   
     var height = svgHeight - margin.top - margin.bottom;
@@ -30,8 +29,8 @@ function makeResponsive() {
     var svg = d3
       .select("#scatter")
       .append("svg")
-      .attr("height", svgHeight)
-      .attr("width", svgWidth);
+      .attr("height", svgHeight + 50)
+      .attr("width", svgWidth - 200);
   
     // Append group element
     var chartGroup = svg.append("g")
@@ -46,23 +45,21 @@ function makeResponsive() {
         // create scales
         var xLinearScale = d3.scaleLinear()
         .domain([d3.min(newsData, d => d[chosenXAxis]*0.9),
-            d3.max(newsData, d => d[chosenXAxis]*1.1)
-        ])
+            d3.max(newsData, d => d[chosenXAxis]*1.1)])
         .range([0, width]);
     
         return xLinearScale;
-    };
+    }
 
     function yScale(newsData, chosenYAxis) {
         // create scales
         var yLinearScale = d3.scaleLinear()
         .domain([d3.min(newsData, d => d[chosenYAxis]-2),
-            d3.max(newsData, d => d[chosenYAxis]+2)
-        ])
-        .range([0, width]);
+            d3.max(newsData, d => d[chosenYAxis]+2)])
+        .range([height, 0]);
     
         return yLinearScale;
-    };
+    }
 
     // function used for updating xAxis yAxis var upon click on axis label
     function renderXAxes(newXScale, xAxis) {
@@ -73,7 +70,7 @@ function makeResponsive() {
         .call(bottomAxis);
     
         return xAxis;
-    };
+    }
 
     function renderYAxes(newYScale, yAxis) {
         var leftAxis = d3.axisLeft(newYScale);
@@ -83,7 +80,7 @@ function makeResponsive() {
         .call(leftAxis);
     
         return yAxis;
-    };
+    }
 
     // function used for updating circles group with a transition to
     // new circles
@@ -95,7 +92,7 @@ function makeResponsive() {
         .attr("dx", d => newXScale(d[chosenXAxis]));
     
         return circlesGroup;
-    }; 
+    } 
 
     function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
 
@@ -145,7 +142,7 @@ function makeResponsive() {
         if (chosenYAxis === "healthcare") {
         ylabel = "Healthcare:";
         }
-        else if (chosenYAxis === "Obesity") {
+        else if (chosenYAxis === "obesity") {
         ylabel = "Obesity:";
         }
         else if (chosenYAxis === "somkes") {
@@ -166,17 +163,18 @@ function makeResponsive() {
         });
     
         circlesGroup.call(toolTip);
-    
+        
+        // mouseover
         circlesGroup.on("mouseover", function(data) {
         toolTip.show(data);
         })
-        // onmouseout event
+        // mouseout
         .on("mouseout", function(data, index) {
             toolTip.hide(data);
         });
     
         return circlesGroup;
-    };
+    }
   
     // Read CSV
     d3.csv("assets/data/data.csv").then(function(newsData, err) {
@@ -226,14 +224,14 @@ function makeResponsive() {
         var circles = circlesGroup.append("circle")
         .attr("cx", d => xLinearScale(d[chosenXAxis]))
         .attr("cy", d => yLinearScale(d[chosenYAxis]))
-        attr("r", 15)
+        .attr("r", 15)
         .classed("stateCircle", true);
 
         // append text inside circles
         var circlesText = circlesGroup.append("text")
         .text(d => d.abbr)
         .attr("dx", d => xLinearScale(d[chosenXAxis]))
-        .attr("dy", d => yLinearScale(d[chosenYAxis])+5) //to center the text in the circles
+        .attr("dy", d => yLinearScale(d[chosenYAxis])+5) 
         .classed("stateText", true);
 
     // Create group for three x-axis labels
@@ -384,16 +382,16 @@ function makeResponsive() {
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
                     // changes yAxis classes to change bold text
-                    if (chosenYAxis === "healthcare") {
+                    if (chosenYAxis === "smokes") {
                         HealthLabel
-                        .classed("active", true)
-                        .classed("inactive", false);
+                        .classed("active", false)
+                        .classed("inactive", true);
                         ObeseLabel
                         .classed("active", false)
                         .classed("inactive", true);
                         SmokesLabel
-                        .classed("active", false)
-                        .classed("inactive", true);
+                        .classed("active", true)
+                        .classed("inactive", false);
                     }
                     else if (chosenXAxis === "obesity") {
                         HealthLabel
@@ -408,21 +406,22 @@ function makeResponsive() {
                     }
                     else {
                         HealthLabel
-                        .classed("active", false)
-                        .classed("inactive", true);
+                        .classed("active", true)
+                        .classed("inactive", false);
                         ObeseLabel
                         .classed("active", false)
                         .classed("inactive", true);
                         SmokesLabel
-                        .classed("active", true)
-                        .classed("inactive", false);
+                        .classed("active", false)
+                        .classed("inactive", true);
                     }
                 }
             });
 
       }).catch(function(error) {
         console.log(error);
-      });
+      });  
+
   }
   
   // When the browser loads, makeResponsive() is called.
