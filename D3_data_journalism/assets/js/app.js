@@ -99,7 +99,7 @@ function makeResponsive() {
         circlesGroup.transition()
         .duration(1000)
         .attr("cy", d => newYScale(d[chosenYAxis]))
-        .attr("cy", d => newYScale(d[chosenYAxis])+5);
+        .attr("dy", d => newYScale(d[chosenYAxis])+5);
     
         return circlesGroup;
     };   
@@ -151,7 +151,7 @@ function makeResponsive() {
     
         var toolTip = d3.tip()
         .attr("class", "d3-tip")
-        .offset([80, -60])       
+        .offset([80, -60])
         .html(function(d) {
             return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
         });
@@ -292,8 +292,6 @@ function makeResponsive() {
             if (value !== chosenXAxis) {
                 // replaces chosenXAxis with value
                 chosenXAxis = value;
-
-                console.log(chosenXAxis)
 
                 // functions here found above csv import
                 // updates x scale for new data
