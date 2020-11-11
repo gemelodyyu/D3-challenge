@@ -1,5 +1,9 @@
 # Data Journalism and D3
 
+
+![image](https://user-images.githubusercontent.com/55970064/98755677-ad044b00-238e-11eb-92e6-ed0d445c3188.png)
+
+
 ## Background
 
 
