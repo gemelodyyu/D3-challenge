@@ -33,3 +33,7 @@ The editor wants to run a series of feature stories about the health risks facin
 
 * Add tooltips to the circles and display each tooltip with the data that the user has selected.
   
+
+### Final Product
+
+https://gemelodyyu.github.io/D3-challenge/
