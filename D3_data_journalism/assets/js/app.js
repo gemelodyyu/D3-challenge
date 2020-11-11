@@ -202,7 +202,6 @@ function makeResponsive() {
 
         // append x axis
         var xAxis = chartGroup.append("g")
-            // .classed("x-axis", true)
             .attr("transform", `translate(0, ${height})`)
             .call(bottomAxis);
 
