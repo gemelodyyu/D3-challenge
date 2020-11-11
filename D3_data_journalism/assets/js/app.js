@@ -130,36 +130,30 @@ function makeResponsive() {
         var ylabel;
     
         if (chosenXAxis === "poverty") {
-        xlabel = "Poverty:";
+        xlabel = "Poverty: ";
         }
         else if (chosenXAxis === "age") {
-        xlabel = "Age:";
+        xlabel = "Age: ";
         }
         else if (chosenXAxis === "income") {
-        xlabel = "Household income:";
+        xlabel = "Household income: ";
         }; 
 
         if (chosenYAxis === "healthcare") {
-        ylabel = "Healthcare:";
+        ylabel = "Healthcare: ";
         }
         else if (chosenYAxis === "obesity") {
-        ylabel = "Obesity:";
+        ylabel = "Obesity: ";
         }
-        else if (chosenYAxis === "somkes") {
-        ylabel = "Smokes:";
+        else if (chosenYAxis === "smokes") {
+        ylabel = "Smokes: ";
         };         
     
         var toolTip = d3.tip()
-        .attr("class", "tooltip")
-        .offset([80, -60])
-        .style("color", "black")
-        .style("background", 'white')
-        .style("border", "solid")
-        .style("border-width", "1px")
-        .style("border-radius", "5px")
-        .style("padding", "5px")        
+        .attr("class", "d3-tip")
+        .offset([80, -60])       
         .html(function(d) {
-            return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}%<br>${ylabel} ${d[chosenYAxis]}`);
+            return (`${d.state}<br>${xlabel} ${d[chosenXAxis]}<br>${ylabel} ${d[chosenYAxis]}`);
         });
     
         circlesGroup.call(toolTip);
