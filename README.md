@@ -24,7 +24,7 @@ The editor wants to run a series of feature stories about the health risks facin
   * Create and situate axes and labels to the left and bottom of the chart.
   
 
-* Include more demographics and more risk factors (three for each axis). Place additional labels in the scatter plot and give them click events so that your users can decide which data to display. Animate the transitions for the circles' locations as well as the range of your axes. 
+* Include more demographics and more risk factors (three for each axis). Place additional labels in the scatter plot and give them click events so that users can decide which data to display. Animate the transitions for the circles' locations as well as the range of your axes. 
 
 
 * Add tooltips to the circles and display each tooltip with the data that the user has selected.
